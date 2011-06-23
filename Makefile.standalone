@@ -1,0 +1,76 @@
+# km_mISDN slave Makefile
+# (c) 10/2001 Karsten Keil <kkeil@suse.de>
+#
+KDIR = /usr/src/linux
+
+DESTDIR =
+TARGET = 
+TARGETS := $(TARGET)
+
+default: $(TARGETS)
+
+all: $(TARGETS)
+
+MYDIR := $(PWD)
+
+TOPDIR := $(KDIR)
+include $(KDIR)/.config
+include $(KDIR)/Makefile
+
+CFLAGS := -I. -I $(KDIR)/drivers/isdn/avmb1 $(CFLAGS) -I $(MYDIR)/newinclude -DLINUX
+CC := $(filter-out -I$(HPATH), $(CC)) -I $(MYDIR)/newinclude -I $(HPATH)
+
+ifdef CONFIG_MODVERSIONS
+CFLAGS := -DMODULE -DMODVERSIONS -include $(MODVERFILE) $(CFLAGS)
+else
+CFLAGS := -DMODULE $(CFLAGS)
+endif
+
+FINDHPATH += $(MYDIR)/newinclude/linux
+
+MODLIB := $(DESTDIR)$(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+
+mISDN: $(TARGETDIR) depend mISDN_mod 
+	$(MAKE) -C $(TARGETDIR) CFLAGS="$(CFLAGS)" MAKING_MODULES=1 modules
+
+dep-files: scripts/mkdep archdep include/linux/version.h
+	scripts/mkdep -- `find $(FINDHPATH) \( -name SCCS -o -name .svn \) -prune -o -follow -name \*.h ! -name modversions.h -print` > .hdepend
+	$(MAKE) $(patsubst %,_sfdep_%,$(TARGETDIR)) _FASTDEP_ALL_SUB_DIRS="$(TARGETDIR)"
+ifdef CONFIG_MODVERSIONS
+	$(MAKE) update-modverfile
+endif
+
+depend dep: dep-files
+
+ifeq ($(PATCHLEVEL), 2)
+
+TARGETMODDIR = misc
+
+install: install_mod
+
+install_mod: modules_install
+
+mISDN_mod:
+	echo patchlevel $(PATCHLEVEL)
+	mkdir -p modules
+
+else
+
+TARGETMODDIR = ../misc
+
+mISDN_mod:
+	echo patchlevel $(PATCHLEVEL)
+
+install: install_mod
+
+install_mod: $(MODLIB)/$(TARGETMODDIR)
+	$(MAKE) -C $(TARGETDIR) MOD_DESTDIR=$(TARGETMODDIR) modules_install
+
+$(MODLIB)/$(TARGETMODDIR):
+	mkdir -p $(MODLIB)/$(TARGETMODDIR) 
+
+endif
+
+modlist: $(MODLIB)/$(TARGETMODDIR)
+	$(MAKE) -C $(TARGETDIR) MOD_DESTDIR=$(TARGETMODDIR) mod_list
+

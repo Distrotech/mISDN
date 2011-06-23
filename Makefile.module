@@ -1,0 +1,49 @@
+# Master Makefile for the ipppcomp
+# (c) 03/2001 Karsten Keil <kkeil@suse.de>
+# adapted from Kurt Garloffs <garloff@suse.de> SecuMod package
+
+DESTDIR = 
+KDIR := /usr/src/linux
+
+TARGET := mISDN
+TARGETS := Rules.make arch scripts .config include $(TARGET)
+TARGETDIR := drivers/isdn/hardware/mISDN
+
+default: $(TARGETS)
+
+all: $(TARGETS)
+
+Rules.make: $(KDIR)/Rules.make Rules.make.ext
+	cp -pf $(KDIR)/Rules.make .
+	cat Rules.make.ext >> Rules.make
+
+.config: $(KDIR)/.config
+	cp -pf $(KDIR)/.config .
+	cat add.config >> .config
+
+arch: $(KDIR)/arch
+	rm -f arch
+	ln -s $(KDIR)/arch .
+
+scripts: $(KDIR)/scripts
+	rm -f scripts
+	ln -s $(KDIR)/scripts
+
+include: $(KDIR)/include
+	rm -f include
+	ln -s $(KDIR)/include
+
+clean:
+	rm -f $(TARGETS) $(TARGETDIR)/.*.flags $(TARGETDIR)/*.o $(TARGETDIR)/.depend
+	rm -f $(TARGETDIR)/*~ newinclude/linux/*~ *~ .kversion
+	rm -f -r modules .depend .hdepend
+	
+$(TARGET):
+	$(MAKE) -f Makefile KDIR=$(KDIR) TARGETDIR=$(TARGETDIR) $(TARGET)
+
+install: $(TARGETS)
+	$(MAKE) -f Makefile KDIR=$(KDIR) TARGETDIR=$(TARGETDIR) install_mod
+	install newinclude/linux/mISDNif.h /usr/include/linux
+
+modlist:
+	$(MAKE) -f Makefile KDIR=$(KDIR) TARGETDIR=$(TARGETDIR) modlist
