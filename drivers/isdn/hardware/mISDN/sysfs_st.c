@@ -9,6 +9,7 @@
  */
 #include "core.h"
 #include "sysfs.h"
+#include <linux/sched.h>
 
 #define to_mISDNstack(d) container_of(d, mISDNstack_t, class_dev)
 

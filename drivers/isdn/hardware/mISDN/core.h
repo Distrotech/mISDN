@@ -6,8 +6,8 @@
 
 #include <linux/slab.h>
 #include <linux/string.h>
-#include <linux/mISDNif.h>
-#include <linux/mISDNdebugtool.h>
+#include <mISDN/mISDNif.h>
+#include <mISDN/mISDNdebugtool.h>
 #include "helper.h"
 #ifdef MISDN_MEMDEBUG
 #include "memdbg.h"

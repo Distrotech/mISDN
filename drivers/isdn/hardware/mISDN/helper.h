@@ -5,6 +5,7 @@
  * This file is released under the GPLv2
  *
  */
+#include <mISDN/mISDNif.h>
 #ifndef _mISDN_HELPER_H
 #define	_mISDN_HELPER_H
 #include <linux/kernel.h>
@@ -108,7 +109,7 @@ extern int	mISDN_layermask2layer(int);
  *
  * get the protocol value of layer <layer> in stack <st>
  */
-extern int	mISDN_get_protocol(mISDNstack_t *, int);
+//extern int	mISDN_get_protocol(mISDNstack_t *, int);
 
 /*
  * int mISDN_HasProtocol(mISDNobject_t *obj, u_int protocol)

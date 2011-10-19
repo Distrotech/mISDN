@@ -9,6 +9,7 @@
 #include <linux/poll.h>
 #include <linux/vmalloc.h>
 #include <linux/timer.h>
+#include <linux/sched.h>
 #ifdef CONFIG_DEVFS_FS
 #include <linux/devfs_fs_kernel.h>
 #endif
@@ -57,7 +58,7 @@ typedef struct entity_item {
 } entity_item_t;
 
 static LIST_HEAD(mISDN_devicelist);
-static rwlock_t	mISDN_device_lock = RW_LOCK_UNLOCKED;
+static DEFINE_RWLOCK(mISDN_device_lock);
 
 static mISDNobject_t	udev_obj;
 static char MName[] = "UserDevice";
@@ -1557,12 +1558,12 @@ mISDN_open(struct inode *ino, struct file *filep)
 		return(-ENOMEM);
 	dev->open_mode |= filep->f_mode & (FMODE_READ | FMODE_WRITE);
 	if (dev->open_mode & FMODE_READ){
-		dev->rport.lock = SPIN_LOCK_UNLOCKED;
+		dev->rport.lock = __SPIN_LOCK_UNLOCKED(dev->rport.lock);
 		dev->rport.maxqlen = DEFAULT_PORT_QUEUELEN;
 		test_and_set_bit(FLG_mISDNPORT_OPEN, &dev->rport.Flag);
 	}
 	if (dev->open_mode & FMODE_WRITE) {
-		dev->wport.lock = SPIN_LOCK_UNLOCKED;
+		dev->wport.lock = __SPIN_LOCK_UNLOCKED(dev->wport.lock);
 		dev->wport.maxqlen = DEFAULT_PORT_QUEUELEN;
 		test_and_set_bit(FLG_mISDNPORT_OPEN, &dev->wport.Flag);
 	}

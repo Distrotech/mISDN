@@ -14,6 +14,7 @@
 #include "arcofi.h"
 #include "debug.h"
 #include "helper.h"
+#include <linux/sched.h>
 
 #define ARCOFI_TIMER_VALUE	20
 

@@ -21,6 +21,7 @@
  *
  */
 
+#include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/delay.h>
 #include "xhfc_su.h"

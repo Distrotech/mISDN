@@ -7,11 +7,12 @@
  */
 
 #include "core.h"
+#include <linux/sched.h>
 
 static LIST_HEAD(mISDN_stacklist);
-static rwlock_t	stacklist_lock = RW_LOCK_UNLOCKED;
+static DEFINE_RWLOCK(stacklist_lock);
 static LIST_HEAD(mISDN_instlist);
-static rwlock_t	instlist_lock = RW_LOCK_UNLOCKED;
+static DEFINE_RWLOCK(instlist_lock);
 
 static DEFINE_MUTEX(misdn_stack_mutex);
 

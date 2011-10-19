@@ -10,12 +10,10 @@
 #include <linux/stddef.h>
 #include <linux/module.h>
 #include <linux/spinlock.h>
+#include <linux/sched.h>
 #include "core.h"
 #ifdef CONFIG_KMOD
 #include <linux/kmod.h>
-#endif
-#ifdef CONFIG_SMP
-#include <linux/smp_lock.h>
 #endif
 
 static char		*mISDN_core_revision = "$Revision: 1.40 $";
@@ -23,10 +21,10 @@ static char		*mISDN_core_version = MISDNVERSION ;
 static void (*dt_new_frame) (mISDNstack_t *stack, enum mISDN_dt_type type, struct sk_buff *skb, int duplicate_skb) = NULL;
 
 LIST_HEAD(mISDN_objectlist);
-static rwlock_t		mISDN_objects_lock = RW_LOCK_UNLOCKED;
+static DEFINE_RWLOCK(mISDN_objects_lock);
 
 LIST_HEAD(mISDN_modulelist);
-static rwlock_t		mISDN_modules_lock = RW_LOCK_UNLOCKED;
+static DEFINE_RWLOCK(mISDN_modules_lock);
 struct modulelist {
 	struct list_head list;
 	struct module *module;
@@ -35,7 +33,7 @@ struct modulelist {
 int core_debug;
 
 static u_char		entityarray[MISDN_MAX_ENTITY/8];
-static spinlock_t	entity_lock = SPIN_LOCK_UNLOCKED;
+static DEFINE_SPINLOCK(entity_lock);
 
 static uint debug;
 static int obj_id;
@@ -90,15 +88,9 @@ mISDNd(void *data)
 {
 	mISDN_thread_t	*hkt = data;
 
-#ifdef CONFIG_SMP
-	lock_kernel();
-#endif
 	MAKEDAEMON("mISDNd");
 	sigfillset(&current->blocked);
 	hkt->thread = current;
-#ifdef CONFIG_SMP
-	unlock_kernel();
-#endif
 	printk(KERN_DEBUG "mISDNd: kernel daemon started (current:%p)\n", current);
 
 	test_and_set_bit(mISDN_TFLAGS_STARTED, &hkt->Flags);
