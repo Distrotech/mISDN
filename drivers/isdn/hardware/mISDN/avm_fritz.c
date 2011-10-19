@@ -8,6 +8,8 @@
  * This file is (c) under GNU PUBLIC LICENSE
  *
  */
+#include <linux/sched.h>
+#include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/pci.h>
 #ifdef NEW_ISAPNP
