@@ -52,7 +52,11 @@ all: VERSION
 	cp $(MISDNDIR)/drivers/isdn/hardware/mISDN/Makefile.v2.6 $(MISDNDIR)/drivers/isdn/hardware/mISDN/Makefile
 	export MINCLUDES=$(MISDNDIR)/include ; export MISDNVERSION=$(MISDNVERSION); make -C $(LINUX) SUBDIRS=$(MISDN_SRC) modules $(CONFIGS)  
 
-install: all modules-install misdn-init
+misdn-headers:
+	mkdir -p $(INSTALL_PREFIX)/usr/include/mISDN
+	cp include/mISDN/*.h $(INSTALL_PREFIX)/usr/include/mISDN
+
+install: all modules-install misdn-init misdn-headers
 	$(DEPMOD) 
 	$(UPDATE_MODULES)
 	$(MODULES_UPDATE)

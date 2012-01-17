@@ -3,6 +3,7 @@
  */
 
 #include <linux/vmalloc.h>
+#include <linux/module.h>
 #include <asm/uaccess.h>
 #include "m_capi.h"
 #include "helper.h"

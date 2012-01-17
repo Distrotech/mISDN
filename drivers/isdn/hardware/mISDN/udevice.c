@@ -10,6 +10,7 @@
 #include <linux/vmalloc.h>
 #include <linux/timer.h>
 #include <linux/sched.h>
+#include <linux/module.h>
 #ifdef CONFIG_DEVFS_FS
 #include <linux/devfs_fs_kernel.h>
 #endif

@@ -7,6 +7,7 @@
  * This file is (c) under GNU PUBLIC LICENSE
  *
  */
+#include <linux/module.h>
 #include "core.h"
 #include "sysfs.h"
 

@@ -8,6 +8,7 @@
 
 #include "core.h"
 #include <linux/sched.h>
+#include <linux/module.h>
 
 static LIST_HEAD(mISDN_stacklist);
 static DEFINE_RWLOCK(stacklist_lock);
