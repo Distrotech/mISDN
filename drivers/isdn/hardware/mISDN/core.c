@@ -84,11 +84,10 @@ static moditem_t modlist[] = {
  */
 
 static int
-mISDNd(void *data)
+mISDNd_run(void *data)
 {
 	mISDN_thread_t	*hkt = data;
 
-	MAKEDAEMON("mISDNd");
 	sigfillset(&current->blocked);
 	hkt->thread = current;
 	printk(KERN_DEBUG "mISDNd: kernel daemon started (current:%p)\n", current);
@@ -157,6 +156,11 @@ mISDNd(void *data)
 	if (hkt->notify != NULL)
 		up(hkt->notify);
 	return(0);
+}
+
+static int
+mISDNd(void *data) {
+  return mISDNd_run(data);
 }
 
 mISDNobject_t *

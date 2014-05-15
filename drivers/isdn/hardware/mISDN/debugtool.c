@@ -125,7 +125,6 @@ static void dt_run (void)
 
 	mutex_lock(&misdn_debugtool_mutex);
 	current->flags |= PF_NOFREEZE;
-	daemonize(MODULE_NAME);
 	allow_signal(SIGKILL);
 	mutex_unlock(&misdn_debugtool_mutex);
 

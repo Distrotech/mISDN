@@ -476,7 +476,6 @@ mISDNStackd(void *data)
 #ifdef CONFIG_SMP
 	mutex_lock(&misdn_stack_mutex);
 #endif
-	MAKEDAEMON("mISDNStackd");
 	sigfillset(&current->blocked);
 	st->thread = current;
 #ifdef CONFIG_SMP
